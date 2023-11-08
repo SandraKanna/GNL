@@ -15,27 +15,28 @@
 char	*get_next_line(int fd)
 {
 	char			buf[BUFFER_SIZE + 1];
-	int				read_bytes;
+	int				read_bytes; //actual read bytes when calling read
 	static t_list	**lst; //text to stock
 	t_list			*read_line;
 	t_list			*last_read;
 	//static	var;
 
 	//protections:
-	if (BUFFER_SIZE == 0)
+	if (BUFFER_SIZE <= 0)
 		return (0);
 	if (BUFFER_SIZE > (65535 - 1))
 		return (NULL);
 	read_bytes = 1;
+	//buf malloc?
 	buf[BUFFER_SIZE] = '\0';
 	*lst = NULL;
 	//read line up to buff_size OR until the \n char is encountered
 	while (!ft_strchr(buf, '\n') && read_bytes != 0)
 	{
-	//read the line and store the actual number of read bytes
+	//read the line and store the actual number of read bytes to then malloc the *content
 		read_bytes = read(fd, buf, BUFFER_SIZE);
-		//et stocke l'info 
-		read_line = ft_lstnew(buf);
+		//store the data/chars/string read
+		read_line = ft_lstnew(buf, read_bytes);
 		if (*lst == NULL)
 			*lst = read_line;
 		else
@@ -44,6 +45,7 @@ char	*get_next_line(int fd)
 			last_read->next = read_line;
 		}
 	}
+	//print/write data stored
 
 	return (read_line->content);
 }

@@ -25,14 +25,23 @@ char	*ft_strchr(const char *str, int c)
 	return (NULL);
 }
 
-t_list	*ft_lstnew(void *content)
+t_list	*ft_lstnew(char *content, int read_bytes)
 {
 	t_list	*new;
+	int		i;
 
 	new = malloc(sizeof(t_list));
 	if (!new)
 		return (NULL);
-	new->content = content;
+	new->content = malloc (sizeof(char) * (read_bytes + 1));
+	if (!new->content)
+		return (NULL);
+	while (content[i] && i < read_bytes)
+	{
+		new->content[i] = buf[i];
+		i++;
+	}
+	new->content[i] = '\0';
 	new->next = NULL;
 	return (new);
 }
