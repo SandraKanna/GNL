@@ -1,7 +1,20 @@
+#include <fcntl.h>
+#include <stdio.h>
+#include "get_next_line.h"
+
 int	main (void)
 {
-	fd == ??
-	//while: tant qu'il y a encore des lignes a lire --> get_next_line(fd)
+	int	fd;
+	int i = 5;
+	// const char *str = "youhuuuu \n ca va bien blabla	!wow. Yep\n no"
+	// fd = open (str, O_RDONLY)
+	fd = open("test", O_RDONLY);
+	while(i > 0)
+	{	
+		get_next_line(fd);
+		i--;
+	}
+	close(fd);
 }
 
 /*

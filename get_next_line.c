@@ -6,21 +6,51 @@
 /*   By: skanna <skanna@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/07 17:06:39 by skanna            #+#    #+#             */
-/*   Updated: 2023/11/08 17:15:14 by skanna           ###   ########.fr       */
+/*   Updated: 2023/11/08 20:34:55 by skanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include ""
+#include "get_next_line.h"
 
 char	*get_next_line(int fd)
 {
-	//read something from fd: size_t read(int fd, void *buf, size_t buff_size);
-    //read line up to buff_size OR until the \n char is encountered
+	char			buf[BUFFER_SIZE + 1];
+	int				read_bytes;
+	static t_list	**lst; //text to stock
+	t_list			*read_line;
+	t_list			*last_read;
+	//static	var;
+
+	//protections:
+	if (BUFFER_SIZE == 0)
+		return (0);
+	if (BUFFER_SIZE > (65535 - 1))
+		return (NULL);
+	read_bytes = 1;
+	buf[BUFFER_SIZE] = '\0';
+	*lst = NULL;
+	//read line up to buff_size OR until the \n char is encountered
+	while (!ft_strchr(buf, '\n') && read_bytes != 0)
+	{
+	//read the line and store the actual number of read bytes
+		read_bytes = read(fd, buf, BUFFER_SIZE);
+		//et stocke l'info 
+		read_line = ft_lstnew(buf);
+		if (*lst == NULL)
+			*lst = read_line;
+		else
+		{
+			last_read = ft_lstlast(*lst);
+			last_read->next = read_line;
+		}
+	}
+
+	return (read_line->content);
 }
 
 /*
 return: the line that was read (incl \n unless end of file reached and it does not end with a \n)
-        or NULL if error or nothing else to read
+		or NULL if error or nothing else to read
 
 undef behaviour: 
 - if the file pointed to by the file descriptor changed since the last call
