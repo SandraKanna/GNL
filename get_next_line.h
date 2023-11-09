@@ -6,7 +6,7 @@
 /*   By: skanna <skanna@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 15:44:09 by skanna            #+#    #+#             */
-/*   Updated: 2023/11/08 20:33:04 by skanna           ###   ########.fr       */
+/*   Updated: 2023/11/09 13:43:33 by skanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ typedef struct s_list
 
 char	*get_next_line(int fd);
 char	*ft_strchr(const char *str, int c);
-t_list	*ft_lstnew(void *content);
+t_list	*ft_lstnew(char *buf, int read_bytes);
 t_list	*ft_lstlast(t_list *lst);
 
 

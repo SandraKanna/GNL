@@ -6,8 +6,8 @@ int	main (void)
 {
 	int	fd;
 	int i = 5;
-	// const char *str = "youhuuuu \n ca va bien blabla	!wow. Yep\n no"
-	// fd = open (str, O_RDONLY)
+	// const char *str = "youhuuuu \n ca va bien blabla	!wow. Yep\n no";
+	// fd = open (str, O_RDONLY);
 	fd = open("test", O_RDONLY);
 	while(i > 0)
 	{	

@@ -6,7 +6,7 @@
 /*   By: skanna <skanna@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 16:16:33 by skanna            #+#    #+#             */
-/*   Updated: 2023/11/08 20:10:16 by skanna           ###   ########.fr       */
+/*   Updated: 2023/11/09 18:09:30 by skanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,27 +24,55 @@ char	*ft_strchr(const char *str, int c)
 		return ((char *)str);
 	return (NULL);
 }
-
-t_list	*ft_lstnew(char *content, int read_bytes)
+t_list	*ft_lstnew(char *buf, int bytes)
 {
-	t_list	*new;
+	t_list	*new_node;
 	int		i;
 
-	new = malloc(sizeof(t_list));
-	if (!new)
+	new_node = malloc(sizeof(t_list));
+	if (!new_node)
 		return (NULL);
-	new->content = malloc (sizeof(char) * (read_bytes + 1));
-	if (!new->content)
+	new_node->content = malloc (sizeof(char) * (bytes + 1));
+	if (!new_node->content)
 		return (NULL);
-	while (content[i] && i < read_bytes)
+	i = 0;
+	while (buf)
 	{
-		new->content[i] = buf[i];
+		new_node->content[i] = buf[i];
 		i++;
 	}
-	new->content[i] = '\0';
-	new->next = NULL;
-	return (new);
+	new_node->content[i] = '\0';
+	new_node->next = NULL;
+	return (new_node);
 }
+
+t_list	*ft_lstnew_n(char *buf, int bytes)
+{
+	t_list	*new_node;
+	int		i;
+
+	new_node = malloc(sizeof(t_list));
+	if (!new_node)
+		return (NULL);
+	new_node->content = malloc (sizeof(char) * (bytes + 1));
+	if (!new_node->content)
+		return (NULL);
+	i = 0;
+	while (buf[i])
+	{
+		while (buf[i] != '\n')
+		{
+			new_node->content[i] = buf[i];
+			i++;
+		}
+		new_node->content[i++] = '\n';
+		new_node->content[i] = '\0';
+		new_node->next = NULL;
+	}
+	return (new_node);
+}
+
+
 
 void	ft_lstclear(t_list **lst, void (*del)(void *))
 {
