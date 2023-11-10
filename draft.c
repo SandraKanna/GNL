@@ -1,57 +1,58 @@
 #include "get_next_line.h"
+#include <stdio.h>
 
-static int	chars_to_cpy(char *buf, int BUFFER_SIZE)
+static int	chars_in_line(char *buf, int read_bytes)
 {
 	int	i;
 
 	i = 0;
-	while (buf[i] != '\n' || i < BUFFER_SIZE)
+	while (buf[i] != '\n' && i < read_bytes)
 		i++;
 	return (i);
 }
 
 char	*get_next_line(int fd)
 {
-	t_list			*line;
-	static t_list	*all_text;
+	static t_list	*lst = NULL;
+	t_list			*new_line;
 	t_list			*last_read;
 	char			*buffer;
 	int				len_line;
-	size_t			read_bytes;
+	int				read_bytes;
 
+	// printf("fd read: %i\n", fd);
 	if (BUFFER_SIZE <= 0 || BUFFER_SIZE > 65535 || fd < 0)
 		return (NULL);
-	buffer[BUFFER_SIZE + 1];
+	buffer = malloc (BUFFER_SIZE + 1);
+	if (!buffer)
+		return (NULL);
 	buffer[BUFFER_SIZE] = '\0';
-	read_bytes = 1;
+	read_bytes = read(fd, buffer, BUFFER_SIZE);
 	len_line = 0;
-	line = NULL;
-	all_text = NULL;
-	// while (len_line == BUFFER_SIZE)
+	new_line = NULL;
+	last_read = NULL;
+	// while (read_bytes == BUFFER_SIZE)
 	while (read_bytes != 0)
+	// while (*buffer != '\0')
 	{
-		read_bytes = read (fd, buffer, BUFFER_SIZE);
 		if (!ft_strchr (buffer, '\n'))
-		{
-			line = ft_lstnew(buffer, read_bytes);
-			if (all_text == NULL)
-				all_text = line;
-			else
-			{
-				last_read = ft_lstlast(all_text);
-				last_read->next = line;
-			}
-		}
+			new_line = ft_lstnew(buffer, read_bytes);
 		else
 		{
-			while ()
-			{
-				len_line = chars_to_cpy(buffer, BUFFER_SIZE);
-
-
+			// strjoin???
+			len_line = chars_in_line(buffer, read_bytes);
+			new_line = ft_lstnew(buffer, len_line);
 		}
-		
-	}
-	return (line->content);
+		if (lst == NULL)
+			lst = new_line;
+		else
+		{
+			last_read = ft_lstlast(lst);
+			last_read->next = new_line;
+		}
+		//lstmap avec strjoin
 
+		return (new_line->content);
+	}
+	return (new_line->content);
 }

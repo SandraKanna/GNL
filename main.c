@@ -5,14 +5,18 @@
 int	main (void)
 {
 	int	fd;
-	int i = 5;
+	int i = 200;
+	char *line;
 	// const char *str = "youhuuuu \n ca va bien blabla	!wow. Yep\n no";
 	// fd = open (str, O_RDONLY);
 	fd = open("test", O_RDONLY);
+	//printf("fd open: %d\n", fd);
 	while(i > 0)
 	{	
-		get_next_line(fd);
+		line = get_next_line(fd);
+		printf("%s\n", line);
 		i--;
+		free(line);
 	}
 	close(fd);
 }
