@@ -36,7 +36,7 @@ t_list	*ft_lstnew(char *buf, int bytes)
 	if (!new_node->content)
 		return (NULL);
 	i = 0;
-	while (buf[i])
+	while (buf[i] && i < bytes)
 	{
 		new_node->content[i] = buf[i];
 		i++;
@@ -45,52 +45,6 @@ t_list	*ft_lstnew(char *buf, int bytes)
 	new_node->next = NULL;
 	return (new_node);
 }
-/*
-t_list	*ft_lstnew_n(char *buf, int bytes)
-{
-	t_list	*new_node;
-	int		i;
-
-	new_node = malloc(sizeof(t_list));
-	if (!new_node)
-		return (NULL);
-	new_node->content = malloc (sizeof(char) * (bytes + 1));
-	if (!new_node->content)
-		return (NULL);
-	i = 0;
-	while (buf[i])
-	{
-		while (buf[i] != '\n')
-		{
-			new_node->content[i] = buf[i];
-			i++;
-		}
-		new_node->content[i++] = '\n';
-		new_node->content[i] = '\0';
-		new_node->next = NULL;
-	}
-	return (new_node);
-}*/
-
-
-
-void	ft_lstclear(t_list **lst, void (*del)(void *))
-{
-	t_list	*temp;
-
-	if (!lst)
-		return ;
-	while (*lst)
-	{
-		temp = (*lst)->next;
-		if (del)
-			del((*lst)->content);
-		free(*lst);
-		*lst = temp;
-	}
-	*lst = NULL;
-}
-
 
 t_list	*ft_lstlast(t_list *lst)
 {
@@ -104,4 +58,68 @@ t_list	*ft_lstlast(t_list *lst)
 	return (current);
 }
 
+// static size_t	ft_strlen(const char *str)
+// {
+// 	int	i;
+
+// 	i = 0;
+// 	while (str[i])
+// 		i++;
+// 	return (i);
+// }
+
+int	chars_in_list(t_list *lst)
+{
+	int	i;
+	int	len;
+
+	i = 0;
+	len = 0;
+	while (lst)
+	{
+		while (lst->content[i])
+		{
+			if (lst->content[i] == '\n')
+			{
+				len++;
+				return (len);
+			}
+			i++;
+			len++;
+		}
+		lst = lst->next;
+	}
+	return (len);
+}
+
+char	*ft_lstjoin(t_list *lst)
+{
+	int		len_joint;
+	int		i;
+	int		j;
+	char	*joint;
+
+	i = 0;
+	j = 0;
+	len_joint = chars_in_list(lst);
+	joint = malloc((len_joint + 1) * sizeof(char));
+	if (joint == NULL)
+		return (NULL);
+	while (lst)
+	{
+		while (lst->content[i])
+		{
+			if (lst->content[i] == '\n')
+			{
+				joint[j++] = '\n';
+				joint[j] = '\0';
+				return (joint);
+			}
+			joint[j++] = lst->content[i++];
+		}
+		lst = lst->next;
+	}
+	joint[j] = '\0';
+	return (joint);
+}
 
