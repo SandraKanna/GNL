@@ -6,7 +6,7 @@
 /*   By: skanna <skanna@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/07 17:06:39 by skanna            #+#    #+#             */
-/*   Updated: 2023/11/08 20:34:55 by skanna           ###   ########.fr       */
+/*   Updated: 2023/11/13 14:33:36 by skanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,41 +14,43 @@
 
 char	*get_next_line(int fd)
 {
-	char			buf[BUFFER_SIZE + 1];
-	int				read_bytes; //actual read bytes when calling read
-	static t_list	**lst; //text to stock
-	t_list			*read_line;
-	t_list			*last_read;
-	//static	var;
+	static t_list	*lst = NULL;
+	t_list			*new_line;
+	char			*buffer;
 
-	//protections:
-	if (BUFFER_SIZE <= 0)
-		return (0);
-	if (BUFFER_SIZE > (65535 - 1))
+	if (BUFFER_SIZE <= 0 || fd < 0)
 		return (NULL);
-	read_bytes = 1;
-	//buf malloc?
-	buf[BUFFER_SIZE] = '\0';
-	*lst = NULL;
-	//read line up to buff_size OR until the \n char is encountered
-	while (!ft_strchr(buf, '\n') && read_bytes != 0)
+	// read_bytes = 1;
+	while (!ft_strchr(buffer, '\n') && read_bytes != 0)
 	{
-	//read the line and store the actual number of read bytes to then malloc the *content
-		read_bytes = read(fd, buf, BUFFER_SIZE);
-		//store the data/chars/string read
-		read_line = ft_lstnew(buf, read_bytes);
-		if (*lst == NULL)
-			*lst = read_line;
+		ft_alloc(fd, buffer, lst);
+		
+	}
+
+	return (new_line->content);
+}
+
+void	ft_alloc(int fd, char *buff, t_list *lst)
+{
+		int		read_bytes;
+		t_list	*element_in_lst;
+		t_list	*last_read;
+		
+		buff = malloc ((BUFFER_SIZE + 1) * sizeof(char));
+		if (!buff)
+			return (NULL);
+		read_bytes = read(fd, buff, BUFFER_SIZE);
+		element_in_lst = ft_lstnew(buff, read_bytes);
+		if (&lst == NULL)
+			lst = element_in_lst;
 		else
 		{
-			last_read = ft_lstlast(*lst);
-			last_read->next = read_line;
+			last_read = ft_lstlast(lst);
+			last_read->next = element_in_lst;
 		}
-	}
-	//print/write data stored
-
-	return (read_line->content);
 }
+
+
 
 /*
 return: the line that was read (incl \n unless end of file reached and it does not end with a \n)

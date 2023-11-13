@@ -6,7 +6,7 @@
 /*   By: skanna <skanna@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 15:44:09 by skanna            #+#    #+#             */
-/*   Updated: 2023/11/10 17:20:55 by skanna           ###   ########.fr       */
+/*   Updated: 2023/11/13 12:29:57 by skanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1024
+#  define BUFFER_SIZE 5
 # endif
 
 # include <stdlib.h>

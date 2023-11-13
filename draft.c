@@ -11,8 +11,6 @@ static int	chars_in_line(char *buf, int read_bytes)
 	return (i);
 }
 
-
-
 char	*get_next_line(int fd)
 {
 	static t_list	*lst = NULL;
@@ -21,10 +19,10 @@ char	*get_next_line(int fd)
 	char			*buffer;
 	int				len_line;
 	int				read_bytes;
-	char 			*get_line;
+	// char 			*get_line;
 	// t_list			*temp;
 
-	if (BUFFER_SIZE <= 0 || BUFFER_SIZE > 65535 || fd < 0)
+	if (BUFFER_SIZE <= 0 || fd < 0)
 		return (NULL);
 	buffer = malloc (BUFFER_SIZE + 1);
 	if (!buffer)
@@ -34,11 +32,9 @@ char	*get_next_line(int fd)
 	len_line = 0;
 	new_line = NULL;
 	last_read = NULL;
-	while (read_bytes != 0)
+	while (read_bytes > 0)
 	{
-		if (!ft_strchr (buffer, '\n'))
-			new_line = ft_lstnew(buffer, read_bytes);
-		else
+		if (!ft_strchr(buffer, '\n') && buffer)
 		{
 			len_line = chars_in_line(buffer, read_bytes);
 			new_line = ft_lstnew(buffer, len_line);
@@ -49,9 +45,10 @@ char	*get_next_line(int fd)
 		{
 			last_read = ft_lstlast(lst);
 			last_read->next = new_line;
+			return (new_line->content);
 		}
 	}
-	while (!ft_strchr (lst->content, '\n') && (lst->next != NULL))
+/*	while (!ft_strchr (lst->content, '\n') && (lst->next != NULL))
 	{
 		get_line = ft_lstjoin(lst);
 		if (!get_line)
@@ -63,6 +60,8 @@ char	*get_next_line(int fd)
 		// get_line = ft_strjoin(lst->content, temp->content);
 		// free(lst->content)s;
 		// lst = temp;
+		lst = lst->next;
 	}
-	return (get_line);
+	return (get_line);*/
+	return (new_line->content);
 }

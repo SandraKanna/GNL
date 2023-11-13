@@ -6,11 +6,12 @@
 /*   By: skanna <skanna@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 16:16:33 by skanna            #+#    #+#             */
-/*   Updated: 2023/11/10 17:24:21 by skanna           ###   ########.fr       */
+/*   Updated: 2023/11/13 17:52:59 by skanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h>
 
 char	*ft_strchr(const char *str, int c)
 {
@@ -32,7 +33,7 @@ t_list	*ft_lstnew(char *buf, int bytes)
 	new_node = malloc(sizeof(t_list));
 	if (!new_node)
 		return (NULL);
-	new_node->content = malloc(sizeof(char *) * (bytes + 1));
+	new_node->content = malloc(sizeof(char) * (bytes + 1));
 	if (!new_node->content)
 		return (NULL);
 	i = 0;
@@ -42,6 +43,7 @@ t_list	*ft_lstnew(char *buf, int bytes)
 		i++;
 	}
 	new_node->content[i] = '\0';
+	printf("new_node: %s\n", new_node->content);
 	new_node->next = NULL;
 	return (new_node);
 }
