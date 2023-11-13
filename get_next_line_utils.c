@@ -94,34 +94,42 @@ int	chars_in_list(t_list *lst)
 	return (len);
 }
 
-char	*ft_lstjoin(t_list *lst)
+t_list	*ft_lstjoin(t_list *lst)
 {
+	t_list	*new_node;
 	int		len_joint;
 	int		i;
 	int		j;
-	char	*joint;
+	//char	*joint;
 
 	i = 0;
 	j = 0;
-	len_joint = chars_in_list(lst);
-	joint = malloc((len_joint + 1) * sizeof(char));
-	if (joint == NULL)
+
+	new_node = malloc(sizeof(t_list));
+	if (!new_node)
 		return (NULL);
+	len_joint = chars_in_list(lst);
+	new_node->content = malloc((len_joint + 1) * sizeof(char));
+	if (!new_node->content)
+	{	
+		free (new_node);
+		return (NULL);
+	}
 	while (lst)
 	{
 		while (lst->content[i])
 		{
 			if (lst->content[i] == '\n')
 			{
-				joint[j++] = '\n';
-				joint[j] = '\0';
-				return (joint);
+				new_node->content[j++] = '\n';
+				new_node->content[j] = '\0';
+				return (new_node);
 			}
-			joint[j++] = lst->content[i++];
+			new_node->content[j++] = lst->content[i++];
 		}
 		lst = lst->next;
 	}
-	joint[j] = '\0';
-	return (joint);
+	new_node->content[j] = '\0';
+	return (new_node);
 }
 

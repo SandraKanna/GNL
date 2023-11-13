@@ -30,7 +30,7 @@ char	*get_next_line(int fd);
 char	*ft_strchr(const char *str, int c);
 t_list	*ft_lstnew(char *buf, int read_bytes);
 t_list	*ft_lstlast(t_list *lst);
-char	*ft_lstjoin(t_list *lst);
+t_list	*ft_lstjoin(t_list *lst);
 
 
 #endif

@@ -20,7 +20,8 @@ char	*get_next_line(int fd)
 
 	if (BUFFER_SIZE <= 0 || fd < 0)
 		return (NULL);
-	// read_bytes = 1;
+	read_bytes = 1;
+	new_line = NULL;
 	while (!ft_strchr(buffer, '\n') && read_bytes != 0)
 	{
 		ft_alloc(fd, buffer, lst);
