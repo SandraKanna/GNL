@@ -6,7 +6,7 @@
 /*   By: skanna <skanna@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 16:16:33 by skanna            #+#    #+#             */
-/*   Updated: 2023/11/14 13:58:21 by skanna           ###   ########.fr       */
+/*   Updated: 2023/11/14 18:08:04 by skanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ t_list	*ft_lstlast(t_list **lst)
 	return (current);
 }
 
-char	*ft_strchr(const char *str, int c)
+/*char	*ft_strchr(const char *str, int c)
 {
 	while (*str)
 	{
@@ -36,7 +36,7 @@ char	*ft_strchr(const char *str, int c)
 	if (*str == (char)c)
 		return ((char *)str);
 	return (NULL);
-}
+}*/
 
 int	lstchr(t_list **lst, int c)
 {

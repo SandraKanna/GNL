@@ -1,12 +1,12 @@
 #include "get_next_line.h"
 #include <stdio.h>
 
-static int	chars_in_line(char *buf, int read_bytes)
+static int	chars_in_line(char *buf, int *read_bytes)
 {
 	int	i;
 
 	i = 0;
-	while (buf[i] != '\n' && i < read_bytes)
+	while (buf[i] != '\n' && i < *read_bytes)
 		i++;
 	// if (buf[i] != '\n')
 	// 	i++;
@@ -27,7 +27,7 @@ void	add_lst(t_list **lst, t_list *new)
 	return ;
 }
 
-int	read_save(int fd, char *buf, t_list **lst, int read_len)
+int	read_save(int fd, char *buf, t_list **lst, int *read_len)
 {
 	t_list	*new;
 	int		line_len;
@@ -36,22 +36,22 @@ int	read_save(int fd, char *buf, t_list **lst, int read_len)
 	buf = malloc (BUFFER_SIZE + 1);
 	if (!buf)
 		return (0);
-	read_len = read(fd, buf, BUFFER_SIZE);
+	*read_len = read(fd, buf, BUFFER_SIZE);
 	if (read_len <= 0)
 		return (0);
 	line_len = chars_in_line(buf, read_len);
-	if (line_len == read_len)
-		new = ft_lstnew(buf, read_len);
-	while (line_len < read_len && buf)
+	if (line_len == *read_len)
+		new = ft_lstnew(buf, *read_len);
+	while (line_len < *read_len && buf)
 	{	
 		new = ft_lstnew(buf, line_len);
-		add_lst(lst, new);
+		add_lst(&lst, new);
 		buf += line_len;
-		read_len -= line_len;
+		*read_len -= line_len;
 		line_len = chars_in_line(buf, read_len);
 		//new = ft_lstnew(buf + line_len, read_len - line_len);
 	}
-	add_lst(lst, new);
+	add_lst(&lst, new);
 	return (1);
 }
 
@@ -69,14 +69,13 @@ char	*get_next_line(int fd)
 	read_len = 1;
 	while (!lstchr(lst, '\n') && read_len > 0)
 	{
-		if(!read_save(fd, buffer, lst, read_len))
+		if(!read_save(fd, buffer, **lst, &read_len))
 		{
 			free(buffer);
 			return (NULL);
 		}
-		printf("lst->")
+		printf("lst->content: %s\n", (*lst)->content);
 		new_line = ft_lstjoin(lst);
-
 
 	}
 	return (new_line->content);
