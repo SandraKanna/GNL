@@ -6,12 +6,24 @@
 /*   By: skanna <skanna@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 16:16:33 by skanna            #+#    #+#             */
-/*   Updated: 2023/11/13 17:52:59 by skanna           ###   ########.fr       */
+/*   Updated: 2023/11/14 13:58:21 by skanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h>
+
+t_list	*ft_lstlast(t_list **lst)
+{
+	t_list	*current;
+
+	if (!lst)
+		return (NULL);
+	current = *lst;
+	while (current->next != NULL)
+		current = current->next;
+	return (current);
+}
 
 char	*ft_strchr(const char *str, int c)
 {
@@ -25,6 +37,27 @@ char	*ft_strchr(const char *str, int c)
 		return ((char *)str);
 	return (NULL);
 }
+
+int	lstchr(t_list **lst, int c)
+{
+	t_list	*current;
+	int		i;
+	
+	i = 0;
+	if (!lst)
+		return (0);
+	current = ft_lstlast(lst);
+	while (current)
+	{
+		if (current->content[i] == (char)c)
+			return (1);
+		i++;
+	}
+	if (current && current->content[i] == (char)c)
+		return (1);
+	return (0);
+}
+
 t_list	*ft_lstnew(char *buf, int bytes)
 {
 	t_list	*new_node;
@@ -37,7 +70,7 @@ t_list	*ft_lstnew(char *buf, int bytes)
 	if (!new_node->content)
 		return (NULL);
 	i = 0;
-	while (buf[i] && i < bytes)
+	while (i < bytes && buf[i])
 	{
 		new_node->content[i] = buf[i];
 		i++;
@@ -48,40 +81,21 @@ t_list	*ft_lstnew(char *buf, int bytes)
 	return (new_node);
 }
 
-t_list	*ft_lstlast(t_list *lst)
-{
-	t_list	*current;
 
-	if (!lst)
-		return (NULL);
-	current = lst;
-	while (current->next != NULL)
-		current = current->next;
-	return (current);
-}
-
-// static size_t	ft_strlen(const char *str)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (str[i])
-// 		i++;
-// 	return (i);
-// }
-
-int	chars_in_list(t_list *lst)
+int	chars_in_list(t_list **lst)
 {
 	int	i;
 	int	len;
 
 	i = 0;
 	len = 0;
+	if (!lst)
+		return (0);
 	while (lst)
 	{
-		while (lst->content[i])
+		while ((*lst)->content[i])
 		{
-			if (lst->content[i] == '\n')
+			if ((*lst)->content[i] == '\n')
 			{
 				len++;
 				return (len);
@@ -89,12 +103,12 @@ int	chars_in_list(t_list *lst)
 			i++;
 			len++;
 		}
-		lst = lst->next;
+		*lst = (*lst)->next;
 	}
 	return (len);
 }
 
-t_list	*ft_lstjoin(t_list *lst)
+t_list	*ft_lstjoin(t_list **lst)
 {
 	t_list	*new_node;
 	int		len_joint;
@@ -117,17 +131,17 @@ t_list	*ft_lstjoin(t_list *lst)
 	}
 	while (lst)
 	{
-		while (lst->content[i])
+		while ((*lst)->content[i])
 		{
-			if (lst->content[i] == '\n')
+			if ((*lst)->content[i] == '\n')
 			{
 				new_node->content[j++] = '\n';
 				new_node->content[j] = '\0';
 				return (new_node);
 			}
-			new_node->content[j++] = lst->content[i++];
+			new_node->content[j++] = (*lst)->content[i++];
 		}
-		lst = lst->next;
+		*lst = (*lst)->next;
 	}
 	new_node->content[j] = '\0';
 	return (new_node);
