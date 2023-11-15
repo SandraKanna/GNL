@@ -77,6 +77,7 @@ char *read_check_alloc(int fd)
 				free_all(lst);
 				return (NULL);
 			}
+			lst = new->next;
 			return (new->content);
 		}
 	}
@@ -89,6 +90,7 @@ char	*get_next_line(int fd)
 	char			*line;
 
 	line = read_check_alloc(fd);
+	//printf("lst->next: %p\n", lst->next);
 	if (line)
 		return (line);
 	else

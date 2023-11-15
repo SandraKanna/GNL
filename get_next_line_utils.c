@@ -6,7 +6,7 @@
 /*   By: skanna <skanna@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 16:16:33 by skanna            #+#    #+#             */
-/*   Updated: 2023/11/15 17:02:49 by skanna           ###   ########.fr       */
+/*   Updated: 2023/11/15 19:09:37 by skanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,9 +108,8 @@ t_list	*ft_lstjoin(t_list *lst)
 	int		j;
 	//char	*joint;
 
-	i = 0;
-	j = 0;
 
+	j = 0;
 	new_node = malloc(sizeof(t_list));
 	if (!new_node)
 		return (NULL);
@@ -123,6 +122,7 @@ t_list	*ft_lstjoin(t_list *lst)
 	}
 	while (lst)
 	{
+		i = 0;
 		while (lst->content[i])
 		{
 			if (lst->content[i] == '\n')
@@ -131,9 +131,11 @@ t_list	*ft_lstjoin(t_list *lst)
 				new_node->content[j] = '\0';
 				if (lst->content[i + 1] != '\0')
 				{
-					res = new_node->next;
-					res->content = (lst->content) + i;	
+					res = ft_lstnew(((lst->content) + i + 1), BUFFER_SIZE - (i + 1));
+					new_node->next = res;
 				}
+				else
+					new_node->next = NULL;
 				return (new_node);
 			}
 			new_node->content[j++] = lst->content[i++];
@@ -144,6 +146,7 @@ t_list	*ft_lstjoin(t_list *lst)
 		free (temp);
 	}
 	new_node->content[j] = '\0';
+	new_node->next = NULL;
 	return (new_node);
 }
 
