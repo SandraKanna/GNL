@@ -1,24 +1,33 @@
 #include <fcntl.h>
 #include <stdio.h>
-#include "get_next_line.h"
+
+
+#include <unistd.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <string.h>
+#include <stdio.h>
+
+
+//#include "get_next_line.h"
 
 int	main (void)
 {
-	int	fd;
-	int i = 200;
+	int	fd = open("test", O_RDONLY);
+	int i = 10;
 	char *line;
 	// const char *str = "youhuuuu \n ca va bien blabla	!wow. Yep\n no";
-	// fd = open (str, O_RDONLY);
-	fd = open("test", O_RDONLY);
-	//printf("fd open: %d\n", fd);
+
+	//while ((line = get_next_line(fd)) != NULL)
 	while(i > 0)
 	{	
 		line = get_next_line(fd);
-		printf("%s\n", line);
-		i--;
+		printf("Line: %s\n", line);
 		free(line);
+		i--;
 	}
 	close(fd);
+	return (0);
 }
 
 /*
