@@ -5,5 +5,9 @@
             "binaryPath": "/local-home/skanna/Documents/GNL/get",
             "binaryArgs": []
         }
-    ]
+    ],
+    "files.associations": {
+        "get_next_line.h": "c",
+        "stdio.h": "c"
+    }
 }

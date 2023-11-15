@@ -6,26 +6,60 @@
 /*   By: skanna <skanna@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 16:16:33 by skanna            #+#    #+#             */
-/*   Updated: 2023/11/14 18:08:04 by skanna           ###   ########.fr       */
+/*   Updated: 2023/11/15 17:02:49 by skanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h>
 
-t_list	*ft_lstlast(t_list **lst)
+t_list	*ft_lstnew(char *buf, int bytes)
 {
-	t_list	*current;
+	t_list	*new_node;
+	int		i;
 
-	if (!lst)
+	new_node = malloc(sizeof(t_list));
+	if (!new_node)
 		return (NULL);
-	current = *lst;
-	while (current->next != NULL)
-		current = current->next;
-	return (current);
+	new_node->content =	 malloc(sizeof(char) * (bytes + 1));
+	if (!new_node->content)
+	{
+		free (new_node);
+		return (NULL);
+	}
+	i = 0;
+	while (i < bytes && buf[i])
+	{
+		new_node->content[i] = buf[i];
+		i++;
+	}
+	new_node->content[bytes] = '\0';
+	//printf("new_node: %s\n", new_node->content);
+	new_node->next = NULL;
+	return (new_node);
 }
 
-/*char	*ft_strchr(const char *str, int c)
+int	ft_lstchr(t_list *lst, char c)
+{
+	t_list	*current;
+	int		i;
+	
+	i = 0;
+	if (!lst)
+		return (0);
+	current = ft_lstlast(lst);
+	while (current->content[i])
+	{
+		if (current->content[i] == c)
+			return (1);
+		i++;
+	}
+	if (current && current->content[i] == c)
+		return (1);
+	return (0);
+}
+
+/*char	*ft_strchr(char *str, int c)
 {
 	while (*str)
 	{
@@ -38,64 +72,20 @@ t_list	*ft_lstlast(t_list **lst)
 	return (NULL);
 }*/
 
-int	lstchr(t_list **lst, int c)
-{
-	t_list	*current;
-	int		i;
-	
-	i = 0;
-	if (!lst)
-		return (0);
-	current = ft_lstlast(lst);
-	while (current)
-	{
-		if (current->content[i] == (char)c)
-			return (1);
-		i++;
-	}
-	if (current && current->content[i] == (char)c)
-		return (1);
-	return (0);
-}
-
-t_list	*ft_lstnew(char *buf, int bytes)
-{
-	t_list	*new_node;
-	int		i;
-
-	new_node = malloc(sizeof(t_list));
-	if (!new_node)
-		return (NULL);
-	new_node->content = malloc(sizeof(char) * (bytes + 1));
-	if (!new_node->content)
-		return (NULL);
-	i = 0;
-	while (i < bytes && buf[i])
-	{
-		new_node->content[i] = buf[i];
-		i++;
-	}
-	new_node->content[i] = '\0';
-	printf("new_node: %s\n", new_node->content);
-	new_node->next = NULL;
-	return (new_node);
-}
-
-
-int	chars_in_list(t_list **lst)
+static int	chars_in_list(t_list *lst)
 {
 	int	i;
 	int	len;
 
-	i = 0;
 	len = 0;
 	if (!lst)
 		return (0);
 	while (lst)
 	{
-		while ((*lst)->content[i])
+		i = 0;
+		while (lst->content[i])
 		{
-			if ((*lst)->content[i] == '\n')
+			if (lst->content[i] == '\n')
 			{
 				len++;
 				return (len);
@@ -103,14 +93,16 @@ int	chars_in_list(t_list **lst)
 			i++;
 			len++;
 		}
-		*lst = (*lst)->next;
+		lst = lst->next;
 	}
 	return (len);
 }
 
-t_list	*ft_lstjoin(t_list **lst)
+t_list	*ft_lstjoin(t_list *lst)
 {
 	t_list	*new_node;
+	t_list *temp;
+	t_list	*res;
 	int		len_joint;
 	int		i;
 	int		j;
@@ -131,17 +123,25 @@ t_list	*ft_lstjoin(t_list **lst)
 	}
 	while (lst)
 	{
-		while ((*lst)->content[i])
+		while (lst->content[i])
 		{
-			if ((*lst)->content[i] == '\n')
+			if (lst->content[i] == '\n')
 			{
 				new_node->content[j++] = '\n';
 				new_node->content[j] = '\0';
+				if (lst->content[i + 1] != '\0')
+				{
+					res = new_node->next;
+					res->content = (lst->content) + i;	
+				}
 				return (new_node);
 			}
-			new_node->content[j++] = (*lst)->content[i++];
+			new_node->content[j++] = lst->content[i++];
 		}
-		*lst = (*lst)->next;
+		temp = lst;
+		lst = lst->next;
+		free (temp->content);
+		free (temp);
 	}
 	new_node->content[j] = '\0';
 	return (new_node);

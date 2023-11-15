@@ -17,8 +17,8 @@ void	add_lst(t_list **lst, t_list *new)
 {
 	t_list	*last;
 
-	if (!lst)
-		lst = &new;
+	if (!*lst)
+		*lst = new;
 	else
 	{
 		last = ft_lstlast(lst);
@@ -80,3 +80,4 @@ char	*get_next_line(int fd)
 	}
 	return (new_line->content);
 }
+ 
