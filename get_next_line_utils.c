@@ -5,13 +5,25 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: skanna <skanna@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/08 16:16:33 by skanna            #+#    #+#             */
-/*   Updated: 2023/11/15 19:09:37 by skanna           ###   ########.fr       */
+/*   Created: 2023/11/16 19:12:39 by skanna            #+#    #+#             */
+/*   Updated: 2023/11/16 23:15:09 by skanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
+
+void free_all(t_list *lst) 
+{
+	while (lst) 
+	{
+		t_list *temp;
+		
+		temp = lst->next;
+		free(lst->content);
+		free(lst);
+		lst = temp;
+	}
+}
 
 t_list	*ft_lstnew(char *buf, int bytes)
 {
@@ -34,45 +46,11 @@ t_list	*ft_lstnew(char *buf, int bytes)
 		i++;
 	}
 	new_node->content[bytes] = '\0';
-	//printf("new_node: %s\n", new_node->content);
 	new_node->next = NULL;
 	return (new_node);
 }
 
-int	ft_lstchr(t_list *lst, char c)
-{
-	t_list	*current;
-	int		i;
-	
-	i = 0;
-	if (!lst)
-		return (0);
-	current = ft_lstlast(lst);
-	while (current->content[i])
-	{
-		if (current->content[i] == c)
-			return (1);
-		i++;
-	}
-	if (current && current->content[i] == c)
-		return (1);
-	return (0);
-}
-
-/*char	*ft_strchr(char *str, int c)
-{
-	while (*str)
-	{
-		if (*str == (char)c)
-			return ((char *)str);
-		str++;
-	}
-	if (*str == (char)c)
-		return ((char *)str);
-	return (NULL);
-}*/
-
-static int	chars_in_list(t_list *lst)
+int	check_line(t_list *lst, char c)
 {
 	int	i;
 	int	len;
@@ -85,7 +63,7 @@ static int	chars_in_list(t_list *lst)
 		i = 0;
 		while (lst->content[i])
 		{
-			if (lst->content[i] == '\n')
+			if (lst->content[i] == c)
 			{
 				len++;
 				return (len);
@@ -95,58 +73,59 @@ static int	chars_in_list(t_list *lst)
 		}
 		lst = lst->next;
 	}
+	len = 0;
 	return (len);
 }
 
-t_list	*ft_lstjoin(t_list *lst)
+char	*join_content(t_list *lst)
 {
-	t_list	*new_node;
-	t_list *temp;
-	t_list	*res;
-	int		len_joint;
+	t_list	*first;
 	int		i;
 	int		j;
-	//char	*joint;
-
-
+	
+	first = lst->next;
+	i = 0;
 	j = 0;
-	new_node = malloc(sizeof(t_list));
-	if (!new_node)
-		return (NULL);
-	len_joint = chars_in_list(lst);
-	new_node->content = malloc((len_joint + 1) * sizeof(char));
-	if (!new_node->content)
+	while (first->next->content[i] != '\n')
 	{	
-		free (new_node);
-		return (NULL);
-	}
-	while (lst)
-	{
-		i = 0;
-		while (lst->content[i])
+		first->content[j] = first->next->content[i];
+		if (first->next->content[++i] == '\0')
 		{
-			if (lst->content[i] == '\n')
-			{
-				new_node->content[j++] = '\n';
-				new_node->content[j] = '\0';
-				if (lst->content[i + 1] != '\0')
-				{
-					res = ft_lstnew(((lst->content) + i + 1), BUFFER_SIZE - (i + 1));
-					new_node->next = res;
-				}
-				else
-					new_node->next = NULL;
-				return (new_node);
-			}
-			new_node->content[j++] = lst->content[i++];
+			first->next = first->next->next;
+			free (first->next->content);
+			free (first->next);
+			i = 0;
 		}
-		temp = lst;
-		lst = lst->next;
-		free (temp->content);
-		free (temp);
+		j++;
 	}
-	new_node->content[j] = '\0';
-	new_node->next = NULL;
-	return (new_node);
+	first->content[j++] = '\n';
+	first->content[j] = '\0';
+	i++;
+	j = 0;
+	while (first->next->content[i] != '\0')	
+		first->next->content[j++] = first->next->content[i++];
+	first->next->content[j] = '\0';
+	return (first->content);
 }
 
+char	*ft_strdup(const char *s)
+{
+	char	*dup;
+	int		len_s;
+	int		i;
+
+	i = 0;
+	len_s = 0;
+	while (s[len_s])
+		len_s++;
+	dup = malloc((len_s + 1) * sizeof(const char));
+	if (dup == NULL)
+		return (NULL);
+	while (s[i])
+	{
+		dup[i] = ((char *)s)[i];
+		i++;
+	}
+	dup[i] = '\0';
+	return (dup);
+}

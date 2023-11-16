@@ -1,5 +1,5 @@
 NAME = get
-SRC = draft5.c get_next_line_utils.c main.c
+SRC = draft7.c get_next_line_utils.c main.c
 OBJ = $(SRC:.c=.o)
 CC = cc
 CFLAGS = -I . -Wall -Werror -Wextra -g3 -fsanitize=address

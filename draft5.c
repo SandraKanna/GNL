@@ -4,30 +4,31 @@
 
 static t_list	*lst = NULL;
 
+
 void	add_lst(t_list *lst, t_list *new)
 {
-	t_list	*last;
+	t_list	*current;
 
 	if (!lst)
 		lst = new;
 	else
 	{
-		last = ft_lstlast(lst);
-		last->next = new;	
+		current = lst;
+		while (current->next != NULL)
+			current = current->next;
+		current->next = new;
 	}
 	return ;
 }
-
-t_list	*ft_lstlast(t_list *lst)
+void	ft_lstadd_front(t_list **lst, t_list *new)
 {
-	t_list	*current;
+	t_list	*temp;
 
-	if (!lst)
-		return (NULL);
-	current = lst;
-	while (current->next != NULL)
-		current = current->next;
-	return (current);
+	if (!lst || !new)
+		return ;
+	temp = *lst;
+	*lst = new;
+	new->next = temp;
 }
 
 static void free_all(t_list *lst) 
@@ -71,13 +72,16 @@ char *read_check_alloc(int fd)
 			add_lst(lst, new);
 		if (ft_lstchr(lst, '\n'))
 		{
-			new = ft_lstjoin(lst);
+			new = ft_lstjoin(&lst);
 			if (!new)
 			{
 				free_all(lst);
 				return (NULL);
 			}
-			lst = new->next;
+			if (lst->next == NULL)
+				lst = new->next;
+			else
+				ft_lstadd_front(&lst, new->next);
 			return (new->content);
 		}
 	}
