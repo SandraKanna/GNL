@@ -10,11 +10,12 @@
 
 int	main (void)
 {
-	int	fd = open("test", O_RDONLY);
+	int	fd;
 	int i = 20;
 	char *line;
-	// const char *str = "youhuuuu \n ca va bien blabla	!wow. Yep\n no";
 
+	fd = open("alternate_line_nl_with_nl", O_RDWR);
+	// const char *str = "youhuuuu \n ca va bien blabla	!wow. Yep\n no";
 	//while ((line = get_next_line(fd)) != NULL)
 	while(i > 0)
 	{	
