@@ -6,24 +6,11 @@
 /*   By: skanna <skanna@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 19:12:39 by skanna            #+#    #+#             */
-/*   Updated: 2023/11/16 23:15:09 by skanna           ###   ########.fr       */
+/*   Updated: 2023/11/17 15:29:37 by skanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-void free_all(t_list *lst) 
-{
-	while (lst) 
-	{
-		t_list *temp;
-		
-		temp = lst->next;
-		free(lst->content);
-		free(lst);
-		lst = temp;
-	}
-}
 
 t_list	*ft_lstnew(char *buf, int bytes)
 {
@@ -77,35 +64,51 @@ int	check_line(t_list *lst, char c)
 	return (len);
 }
 
-char	*join_content(t_list *lst)
+char	*manage_line(t_list **join, int i)
 {
-	t_list	*first;
+	int		j;
+	t_list	*temp;
+
+	j = 0;
+	if ((*join)->next->content[i] == '\0')
+	{
+		temp = (*join)->next->next;
+		free ((*join)->next->content);
+		free ((*join)->next);
+		(*join)->next = temp;
+	}
+	else
+	{
+		while ((*join)->next->content[i] != '\0')
+			(*join)->next->content[j++] = (*join)->next->content[i++];
+		(*join)->next->content[j] = '\0';
+	}
+	return ((*join)->content);
+}
+
+char	*join_content(t_list **join)
+{
 	int		i;
 	int		j;
+	t_list	*temp;
 	
-	first = lst->next;
 	i = 0;
 	j = 0;
-	while (first->next->content[i] != '\n')
-	{	
-		first->content[j] = first->next->content[i];
-		if (first->next->content[++i] == '\0')
+	while ((*join)->next->content[i] != '\n')
+	{
+		(*join)->content[j++] = (*join)->next->content[i++];
+		if ((*join)->next->content[i] == '\0')
 		{
-			first->next = first->next->next;
-			free (first->next->content);
-			free (first->next);
+			temp = (*join)->next->next;
+			free ((*join)->next->content);
+			free ((*join)->next);
+			(*join)->next = temp;
 			i = 0;
 		}
-		j++;
 	}
-	first->content[j++] = '\n';
-	first->content[j] = '\0';
+	(*join)->content[j++] = '\n';
 	i++;
-	j = 0;
-	while (first->next->content[i] != '\0')	
-		first->next->content[j++] = first->next->content[i++];
-	first->next->content[j] = '\0';
-	return (first->content);
+	return(manage_line(join, i));
 }
 
 char	*ft_strdup(const char *s)

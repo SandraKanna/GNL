@@ -6,7 +6,7 @@
 /*   By: skanna <skanna@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 15:44:09 by skanna            #+#    #+#             */
-/*   Updated: 2023/11/16 22:56:15 by skanna           ###   ########.fr       */
+/*   Updated: 2023/11/17 15:16:38 by skanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,10 @@ typedef struct s_list
 
 
 char	*get_next_line(int fd);
-void free_all(t_list *lst);
+void 	free_all(t_list *lst);
 t_list	*ft_lstnew(char *buf, int bytes);
-int	check_line(t_list *lst, char c);
-char	*join_content(t_list *lst);
+int		check_line(t_list *lst, char c);
+char	*join_content(t_list **join);
 char	*ft_strdup(const char *s);
 
 #endif

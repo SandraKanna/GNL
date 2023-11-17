@@ -1,5 +1,18 @@
 #include "get_next_line.h"
 
+void free_all(t_list *lst) 
+{
+	while (lst) 
+	{
+		t_list *temp;
+		
+		temp = lst->next;
+		free(lst->content);
+		free(lst);
+		lst = temp;
+	}
+}
+
 static char	*get_line(t_list *lst, int len_line)
 {
 	t_list	*join;
@@ -16,9 +29,10 @@ static char	*get_line(t_list *lst, int len_line)
 		free_all(lst);
 		return (NULL);
 	}
+	join->content[len_line] = '\0';
 	join->next = lst->next;
 	lst->next = join;
-	return (join_content(lst));
+	return (join_content(&join));
 }
 
 static int	save_buf(char *buffer, int read_bytes, t_list *lst)
@@ -58,10 +72,7 @@ static int	read_save(int fd, char *buffer, t_list *lst)
 			return (0);
 		}
 		if (read_bytes < 0)
-		{
-			free_all(lst);
-			return (0);
-		}
+			return (free_all(lst), 0);
 		buffer[read_bytes] = '\0';
 		len = save_buf(buffer, read_bytes, lst);
 		if (len > 0)
@@ -91,13 +102,10 @@ char	*get_next_line(int fd)
 	line = ft_strdup(get_line(lst, len_line));
 	mem = lst->next;
 	free (lst->next->content);
-	lst->next = lst->next->next;
+	lst->next = mem->next;
 	free (mem);
 	if (line)
 		return (line);
 	else
-	{
-		free_all(lst);
-		return (NULL);
-	}
+		return (free_all(lst), NULL);
 }
