@@ -8,6 +8,7 @@
     ],
     "files.associations": {
         "get_next_line.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "stdlib.h": "c"
     }
 }

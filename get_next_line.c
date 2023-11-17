@@ -1,68 +1,108 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: skanna <skanna@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/07 17:06:39 by skanna            #+#    #+#             */
-/*   Updated: 2023/11/13 14:33:36 by skanna           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "get_next_line.h"
+
+void free_all(t_list *lst) 
+{
+	while (lst) 
+	{
+		t_list *temp;
+		
+		temp = lst->next;
+		free(lst->content);
+		free(lst);
+		lst = temp;
+	}
+}
+
+static char	*get_line(t_list *lst, int len_line)
+{
+	t_list	*join;
+
+	join = malloc (sizeof(t_list));
+	if (!join)
+	{
+		free_all(lst);
+		return (NULL);
+	}
+	join->content = malloc((len_line + 1) * sizeof(char));
+	if (!join)
+	{
+		free_all(lst);
+		return (NULL);
+	}
+	join->content[len_line] = '\0';
+	join->next = lst->next;
+	lst->next = join;
+	return (join_content(&join));
+}
+
+static int	save_buf(char *buffer, int read_bytes, t_list *lst)
+{
+	t_list	*new;
+	t_list	*current;
+
+	new = ft_lstnew(buffer, read_bytes);
+	if (!new)
+	{
+		free_all(lst);
+		return (0);		
+	}
+	current = lst;
+	while (current->next != NULL)
+		current = current->next;
+	current->next = new;
+	return (check_line(lst, '\n', read_bytes));
+}
+
+static int	read_save(int fd, char *buffer, t_list *lst)
+{
+	int		read_bytes;
+	int		len;
+
+	read_bytes = 1;
+	len = 0;
+	while (read_bytes > 0)
+	{
+		read_bytes = read(fd, buffer, BUFFER_SIZE);
+		if (read_bytes == 0 && (lst->next) != NULL)
+			return(check_line(lst, '\n', read_bytes));
+		if (read_bytes < 0)
+			return (free_all(lst), 0);
+		buffer[read_bytes] = '\0';
+		len = save_buf(buffer, read_bytes, lst);
+		if (len > 0)
+			return (len);
+	}
+	return (0);
+}
+
 
 char	*get_next_line(int fd)
 {
-	static t_list	*lst = NULL;
-	t_list			*new_line;
-	char			*buffer;
+	static t_list	*lst;
+	t_list	*mem;
+	char	*line;
+	char	buffer[BUFFER_SIZE + 1];
+	int		len_line;
 
-	if (BUFFER_SIZE <= 0 || fd < 0)
+	if (fd < 0 || (BUFFER_SIZE == 0 && !lst))
 		return (NULL);
-	read_bytes = 1;
-	new_line = NULL;
-	while (!ft_strchr(buffer, '\n') && read_bytes != 0)
+	if (!lst)
 	{
-		ft_alloc(fd, buffer, lst);
-		
-	}
-
-	return (new_line->content);
-}
-
-void	ft_alloc(int fd, char *buff, t_list *lst)
-{
-		int		read_bytes;
-		t_list	*element_in_lst;
-		t_list	*last_read;
-		
-		buff = malloc ((BUFFER_SIZE + 1) * sizeof(char));
-		if (!buff)
+		lst = ft_lstnew("", 0);
+		if (!lst)
 			return (NULL);
-		read_bytes = read(fd, buff, BUFFER_SIZE);
-		element_in_lst = ft_lstnew(buff, read_bytes);
-		if (&lst == NULL)
-			lst = element_in_lst;
-		else
-		{
-			last_read = ft_lstlast(lst);
-			last_read->next = element_in_lst;
-		}
+	}
+	len_line = read_save(fd, buffer, lst);
+	if (len_line == 0)
+		return (NULL);
+	line = ft_strdup(get_line(lst, len_line));
+	mem = lst->next;
+	free (lst->next->content);
+	lst->next = mem->next;
+	free (mem);
+	if (line)
+		return (line);
+	else
+		return (free_all(lst), NULL);
 }
 
-
-
-/*
-return: the line that was read (incl \n unless end of file reached and it does not end with a \n)
-		or NULL if error or nothing else to read
-
-undef behaviour: 
-- if the file pointed to by the file descriptor changed since the last call
-- when reading a binary file
-
-BONUS:
-- use ONLY ONE static variable
-- manage multiple file descriptors at the same time
-
-*/

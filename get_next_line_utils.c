@@ -6,7 +6,7 @@
 /*   By: skanna <skanna@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 19:12:39 by skanna            #+#    #+#             */
-/*   Updated: 2023/11/17 15:29:37 by skanna           ###   ########.fr       */
+/*   Updated: 2023/11/17 18:07:32 by skanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ t_list	*ft_lstnew(char *buf, int bytes)
 	return (new_node);
 }
 
-int	check_line(t_list *lst, char c)
+int	check_line(t_list *lst, char c, int read_bytes)
 {
 	int	i;
 	int	len;
@@ -60,30 +60,27 @@ int	check_line(t_list *lst, char c)
 		}
 		lst = lst->next;
 	}
-	len = 0;
+	if (read_bytes > 0)
+		return (0);
 	return (len);
 }
 
-char	*manage_line(t_list **join, int i)
+static void	manage_line(t_list **join, int i)
 {
 	int		j;
-	t_list	*temp;
 
 	j = 0;
-	if ((*join)->next->content[i] == '\0')
-	{
-		temp = (*join)->next->next;
-		free ((*join)->next->content);
-		free ((*join)->next);
-		(*join)->next = temp;
-	}
+	
+	if ((*join)->next == NULL)
+		return ;
 	else
 	{
 		while ((*join)->next->content[i] != '\0')
 			(*join)->next->content[j++] = (*join)->next->content[i++];
 		(*join)->next->content[j] = '\0';
 	}
-	return ((*join)->content);
+	return ;
+	//return ((*join)->content);
 }
 
 char	*join_content(t_list **join)
@@ -94,7 +91,7 @@ char	*join_content(t_list **join)
 	
 	i = 0;
 	j = 0;
-	while ((*join)->next->content[i] != '\n')
+	while ((*join)->next != NULL && (*join)->next->content[i] != '\n')
 	{
 		(*join)->content[j++] = (*join)->next->content[i++];
 		if ((*join)->next->content[i] == '\0')
@@ -106,9 +103,10 @@ char	*join_content(t_list **join)
 			i = 0;
 		}
 	}
-	(*join)->content[j++] = '\n';
-	i++;
-	return(manage_line(join, i));
+	if ((*join)->next != NULL && (*join)->next->content[i++] == '\n')
+		(*join)->content[j] = '\n';
+	manage_line(join, i);
+	return((*join)->content);
 }
 
 char	*ft_strdup(const char *s)

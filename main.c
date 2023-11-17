@@ -11,7 +11,7 @@
 int	main (void)
 {
 	int	fd = open("test", O_RDONLY);
-	int i = 10;
+	int i = 20;
 	char *line;
 	// const char *str = "youhuuuu \n ca va bien blabla	!wow. Yep\n no";
 
