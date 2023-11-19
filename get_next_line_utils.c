@@ -68,11 +68,19 @@ int	check_line(t_list *lst, char c, int read_bytes)
 static void	manage_line(t_list **join, int i)
 {
 	int		j;
+	t_list	*temp;
 
 	j = 0;
 	
 	if ((*join)->next == NULL)
 		return ;
+	if (i == 1)
+	{
+		temp = (*join)->next->next;
+		free ((*join)->next->content);
+		free ((*join)->next);			
+		(*join)->next = temp;
+	}
 	else
 	{
 		while ((*join)->next->content[i] != '\0')
