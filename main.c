@@ -11,10 +11,10 @@
 int	main (void)
 {
 	int	fd;
-	int i = 20;
+	int i = 4;
 	char *line;
 
-	fd = open("alternate_line_nl_with_nl", O_RDWR);
+	fd = open("test", O_RDWR);
 	// const char *str = "youhuuuu \n ca va bien blabla	!wow. Yep\n no";
 	//while ((line = get_next_line(fd)) != NULL)
 	while(i > 0)

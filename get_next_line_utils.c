@@ -20,7 +20,7 @@ t_list	*ft_lstnew(char *buf, int bytes)
 	new_node = malloc(sizeof(t_list));
 	if (!new_node)
 		return (NULL);
-	new_node->content =	 malloc(sizeof(char) * (bytes + 1));
+	new_node->content = malloc(sizeof(char) * (bytes + 1));
 	if (!new_node->content)
 	{
 		free (new_node->content);
@@ -65,13 +65,14 @@ int	check_line(t_list *lst, char c, int read_bytes)
 		return (0);
 	return (len);
 }
+
 void	check_rest(t_list **lst, int i)
 {
 	int	j;
-	
+
 	j = 0;
 	if ((*lst) && (*lst)->content[i] == '\0')
-	{	
+	{
 		free_all(lst);
 		return ;
 	}

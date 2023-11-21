@@ -10,15 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <stdlib.h>
-# include <unistd.h>
-
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1000000
+#  define BUFFER_SIZE 10
 # endif
+
+# include <stdlib.h>
+# include <unistd.h>
 
 typedef struct s_list
 {
@@ -26,21 +26,10 @@ typedef struct s_list
 	struct s_list	*next;
 }					t_list;
 
-/*typedef struct s_arg
-{
-	int	i;
-	int	j;
-}t_arg;
-*/
-
-
 char	*get_next_line(int fd);
-void 	free_all(t_list **lst);
+void	free_all(t_list **lst);
 t_list	*ft_lstnew(char *buf, int bytes);
-int	check_line(t_list *lst, char c, int read_bytes);
-//char	*join_content(t_list **join);
-//char	*ft_strdup(const char *s);
-//char	*ft_strjoin(char const *s1, char const *s2);
+int		check_line(t_list *lst, char c, int read_bytes);
 void	check_rest(t_list **lst, int i);
 
 #endif

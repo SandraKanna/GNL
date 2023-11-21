@@ -4,6 +4,11 @@
             "cwd": "/local-home/skanna/Documents/GNL",
             "binaryPath": "/local-home/skanna/Documents/GNL/get",
             "binaryArgs": []
+        },
+        {
+            "cwd": "/Users/sandra/Documents/DevLearn/42/GNL",
+            "binaryPath": "/Users/sandra/Documents/DevLearn/42/GNL/get",
+            "binaryArgs": []
         }
     ],
     "files.associations": {

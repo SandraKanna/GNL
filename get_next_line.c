@@ -1,14 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: skanna <skanna@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/16 19:12:39 by skanna            #+#    #+#             */
+/*   Updated: 2023/11/21 19:18:53 by skanna           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
-static t_list   *lst = NULL;
-
-void free_all(t_list **lst) 
+void	free_all(t_list **lst)
 {
-	t_list *temp;
+	t_list	*temp;
 
-	if (!lst)
+	if (!*lst)
 		return ;
-	while (*lst) 
+	while (*lst)
 	{
 		temp = (*lst)->next;
 		free((*lst)->content);
@@ -18,7 +28,7 @@ void free_all(t_list **lst)
 	*lst = NULL;
 }
 
-static	char *get_line(t_list **lst, char *line)
+static char	*get_line(t_list **lst, char *line)
 {
 	t_list	*temp;
 	int		i;
@@ -29,7 +39,7 @@ static	char *get_line(t_list **lst, char *line)
 	while (*lst && (*lst)->content[i] != '\n')
 	{
 		line[j++] = (*lst)->content[i++];
-		if((*lst)->content[i] == '\0')
+		if ((*lst)->content[i] == '\0')
 		{
 			temp = (*lst)->next;
 			free ((*lst)->content);
@@ -47,7 +57,7 @@ static	char *get_line(t_list **lst, char *line)
 static int	save_buffer(t_list **lst, t_list *new, int read_bytes)
 {
 	t_list	*temp;
-	
+
 	if (!*lst)
 		*lst = new;
 	else
@@ -57,7 +67,7 @@ static int	save_buffer(t_list **lst, t_list *new, int read_bytes)
 			temp = temp->next;
 		temp->next = new;
 	}
-	return (check_line(*lst, '\n',read_bytes));
+	return (check_line(*lst, '\n', read_bytes));
 }
 
 static int	check_read(int fd, char *buffer, t_list **lst)
@@ -76,7 +86,7 @@ static int	check_read(int fd, char *buffer, t_list **lst)
 		if (b_read == 0 && *lst != NULL)
 			return (check_line(*lst, '\n', b_read));
 		if (b_read > 0)
-		{	
+		{
 			buffer[b_read] = '\0';
 			new = ft_lstnew(buffer, b_read);
 			len_line = save_buffer(lst, new, b_read);
@@ -89,9 +99,10 @@ static int	check_read(int fd, char *buffer, t_list **lst)
 
 char	*get_next_line(int fd)
 {
-	char    *line;
-	char    buffer[BUFFER_SIZE + 1];
-	int     len_line;
+	static t_list	*lst = NULL;
+	char			*line;
+	char			buffer[BUFFER_SIZE + 1];
+	int				len_line;
 
 	if (fd < 0 || (BUFFER_SIZE == 0 && !lst))
 		return (NULL);
@@ -103,7 +114,10 @@ char	*get_next_line(int fd)
 	}
 	line = malloc(sizeof(char) * (len_line + 1));
 	if (!line)
+	{
+		free_all (&lst);
 		return (NULL);
+	}
 	line[len_line] = '\0';
 	get_line(&lst, line);
 	return (line);
