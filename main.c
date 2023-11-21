@@ -11,20 +11,21 @@
 int	main (void)
 {
 	int	fd;
-	int i = 20;
+	//int i = 20;
 	char *line;
 
-	fd = open("alternate_line_nl_with_nl", O_RDWR);
+	fd = open("empty", O_RDWR);
 	// const char *str = "youhuuuu \n ca va bien blabla	!wow. Yep\n no";
-	//while ((line = get_next_line(fd)) != NULL)
-	while(i > 0)
+	while ((line = get_next_line(fd)) != NULL)
+	//while(i > 0)
 	{	
-		line = get_next_line(fd);
+		//line = get_next_line(fd);
 		printf("Line: %s\n", line);
 		free(line);
-		i--;
+		//i--;
 	}
 	close(fd);
+	line = get_next_line(fd);
 	return (0);
 }
 

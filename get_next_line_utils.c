@@ -6,7 +6,7 @@
 /*   By: skanna <skanna@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 19:12:39 by skanna            #+#    #+#             */
-/*   Updated: 2023/11/17 18:07:32 by skanna           ###   ########.fr       */
+/*   Updated: 2023/11/21 15:45:03 by skanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ t_list	*ft_lstnew(char *buf, int bytes)
 	new_node->content =	 malloc(sizeof(char) * (bytes + 1));
 	if (!new_node->content)
 	{
+		free (new_node->content);
 		free (new_node);
 		return (NULL);
 	}
@@ -37,7 +38,7 @@ t_list	*ft_lstnew(char *buf, int bytes)
 	return (new_node);
 }
 
-int	check_line(t_list *lst, char c, int read_bytes)
+int	check_line(t_list *lst, char c)
 {
 	int	i;
 	int	len;
@@ -60,8 +61,6 @@ int	check_line(t_list *lst, char c, int read_bytes)
 		}
 		lst = lst->next;
 	}
-	if (read_bytes > 0)
-		return (0);
 	return (len);
 }
 
@@ -74,7 +73,7 @@ static void	manage_line(t_list **join, int i)
 	
 	if ((*join)->next == NULL)
 		return ;
-	if (i == 1)
+	if ((*join)->next->content[i] == '\0')
 	{
 		temp = (*join)->next->next;
 		free ((*join)->next->content);
@@ -91,7 +90,7 @@ static void	manage_line(t_list **join, int i)
 	//return ((*join)->content);
 }
 
-char	*join_content(t_list **join)
+/*char	*join_content(t_list **join)
 {
 	int		i;
 	int		j;
@@ -115,6 +114,32 @@ char	*join_content(t_list **join)
 		(*join)->content[j] = '\n';
 	manage_line(join, i);
 	return((*join)->content);
+}*/
+
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	char	*joint;
+	size_t	len_s1;
+	size_t	len_s2;
+	size_t	i;
+	size_t	j;
+
+	i = 0;
+	j = 0;
+	if (!s1 ||!s2)
+		return (NULL);
+	len_s1 = ft_strlen(s1);
+	len_s2 = ft_strlen(s2);
+	joint = malloc((len_s1 + len_s2 + 1) * sizeof(char));
+	if (joint == NULL)
+		return (NULL);
+	while (s1[j])
+		joint [i++] = ((char *)s1)[j++];
+	j = 0;
+	while (s2[j])
+		joint[i++] = ((char *)s2)[j++];
+	joint[i] = '\0';
+	return (joint);
 }
 
 char	*ft_strdup(const char *s)
