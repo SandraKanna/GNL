@@ -6,7 +6,7 @@
 /*   By: skanna <skanna@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 19:12:39 by skanna            #+#    #+#             */
-/*   Updated: 2023/11/21 15:45:03 by skanna           ###   ########.fr       */
+/*   Updated: 2023/11/21 19:18:53 by skanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,15 +38,15 @@ t_list	*ft_lstnew(char *buf, int bytes)
 	return (new_node);
 }
 
-int	check_line(t_list *lst, char c)
+int	check_line(t_list *lst, char c, int read_bytes)
 {
 	int	i;
 	int	len;
 
 	len = 0;
 	if (!lst)
-		return (0);
-	while (lst)
+		return (-1);
+	while (lst != NULL)
 	{
 		i = 0;
 		while (lst->content[i])
@@ -61,10 +61,28 @@ int	check_line(t_list *lst, char c)
 		}
 		lst = lst->next;
 	}
+	if (read_bytes > 0)
+		return (0);
 	return (len);
 }
+void	check_rest(t_list **lst, int i)
+{
+	int	j;
+	
+	j = 0;
+	if ((*lst) && (*lst)->content[i] == '\0')
+	{	
+		free_all(lst);
+		return ;
+	}
+	while ((*lst) && (*lst)->content[i] != '\0')
+		(*lst)->content[j++] = (*lst)->content[i++];
+	if (*lst)
+		(*lst)->content[j] = '\0';
+	return ;
+}
 
-static void	manage_line(t_list **join, int i)
+/*void	manage_line(t_list **join, int i)
 {
 	int		j;
 	t_list	*temp;
@@ -90,7 +108,7 @@ static void	manage_line(t_list **join, int i)
 	//return ((*join)->content);
 }
 
-/*char	*join_content(t_list **join)
+char	*join_content(t_list **join)
 {
 	int		i;
 	int		j;
@@ -116,7 +134,7 @@ static void	manage_line(t_list **join, int i)
 	return((*join)->content);
 }*/
 
-char	*ft_strjoin(char const *s1, char const *s2)
+/*char	*ft_strjoin(char const *s1, char const *s2)
 {
 	char	*joint;
 	size_t	len_s1;
@@ -162,4 +180,4 @@ char	*ft_strdup(const char *s)
 	}
 	dup[i] = '\0';
 	return (dup);
-}
+}*/

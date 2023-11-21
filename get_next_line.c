@@ -1,5 +1,7 @@
 #include "get_next_line.h"
 
+static t_list   *lst = NULL;
+
 void free_all(t_list **lst) 
 {
 	t_list *temp;
@@ -16,102 +18,93 @@ void free_all(t_list **lst)
 	*lst = NULL;
 }
 
-static char	*get_line(t_list **lst, int len_line)
+static	char *get_line(t_list **lst, char *line)
 {
-	t_list	*join;
+	t_list	*temp;
+	int		i;
+	int		j;
 
-	join = malloc (sizeof(t_list));
-	if (!join)
+	i = 0;
+	j = 0;
+	while (*lst && (*lst)->content[i] != '\n')
 	{
-		free_all(lst);
-		return (NULL);
+		line[j++] = (*lst)->content[i++];
+		if((*lst)->content[i] == '\0')
+		{
+			temp = (*lst)->next;
+			free ((*lst)->content);
+			free (*lst);
+			*lst = temp;
+			i = 0;
+		}
 	}
-	join->content = malloc((len_line + 1) * sizeof(char));
-	if (!join)
-	{
-		free_all(lst);
-		return (NULL);
-	}
-	join->content[len_line] = '\0';
-	join->next = (*lst)->next;
-	(*lst)->next = join;
-	return (join_content(&join));
+	if ((*lst) && (*lst)->content[i++] == '\n')
+		line[j] = '\n';
+	check_rest(lst, i);
+	return (line);
 }
 
-static int	save_buf(char *buffer, int read_bytes, t_list **lst)
+static int	save_buffer(t_list **lst, t_list *new, int read_bytes)
 {
+	t_list	*temp;
+	
+	if (!*lst)
+		*lst = new;
+	else
+	{
+		temp = *lst;
+		while (temp->next != NULL)
+			temp = temp->next;
+		temp->next = new;
+	}
+	return (check_line(*lst, '\n',read_bytes));
+}
+
+static int	check_read(int fd, char *buffer, t_list **lst)
+{
+	int		b_read;
 	t_list	*new;
-	t_list	*current;
+	int		len_line;
 
-	new = ft_lstnew(buffer, read_bytes);
-	if (!new)
+	b_read = 1;
+	len_line = 0;
+	while (b_read > 0)
 	{
-		free_all(lst);
-		return (0);		
+		b_read = read(fd, buffer, BUFFER_SIZE);
+		if (b_read < 0 || (b_read == 0 && *lst == NULL))
+			return (-1);
+		if (b_read == 0 && *lst != NULL)
+			return (check_line(*lst, '\n', b_read));
+		if (b_read > 0)
+		{	
+			buffer[b_read] = '\0';
+			new = ft_lstnew(buffer, b_read);
+			len_line = save_buffer(lst, new, b_read);
+			if (len_line > 0)
+				return (len_line);
+		}
 	}
-	current = *lst;
-	while (current->next != NULL)
-		current = current->next;
-	current->next = new;
-	return (check_line(*lst, '\n', read_bytes));
+	return (-1);
 }
-
-static int	read_save(int fd, char *buffer, t_list *lst)
-{
-	int		read_bytes;
-	int		len;
-
-	read_bytes = 1;
-	len = 0;
-	while (read_bytes > 0)
-	{
-		read_bytes = read(fd, buffer, BUFFER_SIZE);
-		if (read_bytes < 0)
-			return (free_all(&lst), 0);
-		if (read_bytes == 0 && (lst->next) != NULL)
-			return(check_line(lst, '\n', read_bytes));
-		buffer[read_bytes] = '\0';
-		len = save_buf(buffer, read_bytes, &lst);
-		if (len > 0)
-			return (len);
-	}
-	return (0);
-}
-
 
 char	*get_next_line(int fd)
 {
-	static t_list	*lst;
-	t_list	*mem;
-	char	*line;
-	char	buffer[BUFFER_SIZE + 1];
-	int		len_line;
+	char    *line;
+	char    buffer[BUFFER_SIZE + 1];
+	int     len_line;
 
-	//if (fd < 0 || (!lst && read(fd, buffer, BUFFER_SIZE) == 0) || (BUFFER_SIZE == 0 && !lst))
 	if (fd < 0 || (BUFFER_SIZE == 0 && !lst))
 		return (NULL);
-	if (!lst)
+	len_line = check_read(fd, buffer, &lst);
+	if (len_line < 0)
 	{
-		if (read(fd, buffer, BUFFER_SIZE) == 0)
-			return (NULL);
-		else
-		{
-			lst = ft_lstnew(buffer, 0);
-			if (!lst)
-				return (NULL);
-		}
-	}
-	len_line = read_save(fd, buffer, lst);
-	if (len_line == 0)
+		free_all (&lst);
 		return (NULL);
-	line = ft_strdup(get_line(&lst, len_line));
-	mem = lst->next;
-	lst->next = mem->next;
-	free (mem->content);
-	free (mem);
-	if (line)
-		return (line);
-	else
-		return (free_all(&lst), NULL);
+	}
+	line = malloc(sizeof(char) * (len_line + 1));
+	if (!line)
+		return (NULL);
+	line[len_line] = '\0';
+	get_line(&lst, line);
+	return (line);
 }
-
