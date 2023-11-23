@@ -6,7 +6,7 @@
 /*   By: skanna <skanna@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 19:12:39 by skanna            #+#    #+#             */
-/*   Updated: 2023/11/23 18:31:21 by skanna           ###   ########.fr       */
+/*   Updated: 2023/11/23 19:46:55 by skanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ char	*get_next_line(int fd)
 	char			buffer[BUFFER_SIZE + 1];
 	int				len_line;
 
-	if (fd < 0 || (BUFFER_SIZE == 0 && !lst[fd]))
+	if (fd > 1024 || fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	len_line = check_read(fd, buffer, &(lst[fd]));
 	if (len_line < 0)
