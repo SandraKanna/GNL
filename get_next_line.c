@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: skanna <skanna@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 19:12:39 by skanna            #+#    #+#             */
-/*   Updated: 2023/11/21 19:18:53 by skanna           ###   ########.fr       */
+/*   Updated: 2023/11/23 18:31:21 by skanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,26 +99,26 @@ static int	check_read(int fd, char *buffer, t_list **lst)
 
 char	*get_next_line(int fd)
 {
-	static t_list	*lst = NULL;
+	static t_list	*lst[1024];
 	char			*line;
 	char			buffer[BUFFER_SIZE + 1];
 	int				len_line;
 
-	if (fd < 0 || (BUFFER_SIZE == 0 && !lst))
+	if (fd < 0 || (BUFFER_SIZE == 0 && !lst[fd]))
 		return (NULL);
-	len_line = check_read(fd, buffer, &lst);
+	len_line = check_read(fd, buffer, &(lst[fd]));
 	if (len_line < 0)
 	{
-		free_all (&lst);
+		free_all (&(lst[fd]));
 		return (NULL);
 	}
 	line = malloc(sizeof(char) * (len_line + 1));
 	if (!line)
 	{
-		free_all (&lst);
+		free_all (&(lst[fd]));
 		return (NULL);
 	}
 	line[len_line] = '\0';
-	get_line(&lst, line);
+	get_line(&(lst[fd]), line);
 	return (line);
 }
