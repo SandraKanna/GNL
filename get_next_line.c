@@ -6,7 +6,7 @@
 /*   By: skanna <skanna@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 19:12:39 by skanna            #+#    #+#             */
-/*   Updated: 2023/11/25 12:58:04 by skanna           ###   ########.fr       */
+/*   Updated: 2023/11/27 13:42:25 by skanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ void	free_all(t_list **lst)
 		free(*lst);
 		*lst = temp;
 	}
-	*lst = NULL;
 }
 
 static char	*get_line(t_list **lst, char *line)

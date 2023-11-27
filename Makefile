@@ -4,7 +4,6 @@ OBJ = $(SRC:.c=.o)
 CC = cc
 CFLAGS = -I . -Wall -Werror -Wextra -g3 -fsanitize=address
 
-
 all: $(NAME)
 
 %.o: %.c

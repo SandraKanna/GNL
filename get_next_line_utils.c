@@ -6,7 +6,7 @@
 /*   By: skanna <skanna@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 19:12:39 by skanna            #+#    #+#             */
-/*   Updated: 2023/11/25 12:58:18 by skanna           ###   ########.fr       */
+/*   Updated: 2023/11/27 13:41:29 by skanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,12 +68,16 @@ int	check_line(t_list *lst, char c, int read_bytes)
 
 void	check_rest(t_list **lst, int i)
 {
-	int	j;
+	t_list	*temp;
+	int		j;
 
 	j = 0;
 	if ((*lst) && (*lst)->content[i] == '\0')
 	{
-		free_all(lst);
+		temp = (*lst)->next;
+		free ((*lst)->content);
+		free(*lst);
+		*lst = temp;
 		return ;
 	}
 	while ((*lst) && (*lst)->content[i] != '\0')
