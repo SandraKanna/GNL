@@ -6,7 +6,7 @@ This interesting project also helped me learn how to use **linked lists**, becom
 
 Regarding linked lists: Each node of the list contains a char** with the strings read into the buffer. 
 Every time a node is created, I check for “\n” and EOF so I can return a line. 
-Once a line is returned, the nodes are freed, but not before checking for any remaining content stored in the subsequent nodes.
+Once a line is returned, the nodes are freed, but not before checking for any remaining content to be stored in the subsequent nodes.
 
 ### Passed the moulinette with 125
 
