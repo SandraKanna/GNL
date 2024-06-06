@@ -9,6 +9,6 @@ Every time a node is created, I check for “\n” and EOF so I can return a lin
 Once a line is returned, the nodes are freed, but not before checking for any remaining content stored in the subsequent nodes.
 
 ### Passed the moulinette with 125
-The mandatory function already takes into account the bonus part (handling multiple fds and using only one static variable), so the files marked with "bonus" are just a copy so the bonus part could be graded by the moulinette. 
 
-The way it handles multiple fds is by creating a table of linked lists: I create one linked list everytime I get a different fd as parameter.
+The mandatory function already takes into account the bonus part (handling multiple file descriptors and using only one static variable), so the files marked with “bonus” are just copies for the bonus part to be graded by the moulinette. 
+The way it handles multiple file descriptors is by creating a table of linked lists: I create one linked list every time I get a different file descriptor as a parameter.
