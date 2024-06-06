@@ -1,9 +1,0 @@
-{
-    "makefile.launchConfigurations": [
-        {
-            "cwd": "/local-home/daribeir/Documents/42/Cursus/Projects/so_long",
-            "binaryPath": "/local-home/daribeir/Documents/42/Cursus/Projects/so_long/so_long",
-            "binaryArgs": ["maps/evil.ber"]
-        }
-    ]
-}

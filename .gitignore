@@ -1,9 +1,3 @@
 *.swp
 *.o
-*.obj
-*.lib
-*.a
-*.so
-*.so.*
 *.out
-Mkfile.old
